@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slide Show Web Component</title>
+<style>
+@layer base {
+    :where( :not( iframe, canvas, img, svg, video ):not( svg *, symbol * ) ) {
+        all: unset;
+        display: revert;
+        line-height: var( --font-line );
+    }
+    *, *::before, *::after {
+        box-sizing: border-box;
+    }
+    html {
+        height: 100%;
+        --font-default: Seravek, 'Gill Sans Nova', Ubuntu, Calibri, 'DejaVu Sans', source-sans-pro, sans-serif;
+        --font-line: calc( 1em + .35rem );
+
+        --wrapper: 60rem;
+        --wrapper-offset: .5fr;
+        @media ( min-width: 40rem ) {
+            --wrapper-offset: 4rem;
+        }
+        @media ( min-width: 70rem ) {
+            /* since we use fancy grid for wrapping, this is necassary */
+            --o-ks-padding: 0em;
+        }
+
+        --blue: #00749d;
+        --raspberry: #de0051;
+
+        --scrollbar-track: hsl( 0 0% 50% / .2 );
+        --scrollbar-thumb: var( --blue );
+
+        --outline-size: max( 2px, .08em );
+        --outline-style: solid;
+        --outline-color: var( --blue );
+        --outline-ink: currentcolor;
+    }
+    body {
+        padding-block: 3rem;
+        font: 1.2em/var( --font-line ) var( --font-default );
+        color: #222;
+        background: #fff;
+        -webkit-font-smoothing: antialiased;
+        text-decoration-thickness: from-font;
+    }
+
+    :is( a, button, input, textarea, select, summary ):focus-visible {
+        outline: var( --outline-size ) var( --outline-style ) var( --outline-ink );
+        outline-offset: var( --outline-offset, var( --outline-size ) );
+    }
+
+    :where( a ) {
+        --_default: var( --color-link, var( --blue ) );
+        --_hover: var( --color-hover, var( --raspberry ) );
+
+        color: var( --_color, var( --_default ) );
+        cursor: revert;
+
+        &:focus,
+        &:hover {
+            --_color: var( --_hover );
+        }
+    }
+
+    :where( pre, code, kbd, samp ) {
+        font-family: monospace, monospace;
+    }
+}
+
+@layer wrap {
+    .wrapping {
+        display: grid;
+        grid-template-columns:
+            [full-start]
+            minmax(1em, 1fr)
+            [mid-start]
+            minmax(0, var( --wrapper-offset ))
+            [main-start]
+            minmax(0, var( --wrapper ))
+            [main-end]
+            minmax(0, var( --wrapper-offset ))
+            [mid-end]
+            minmax(1em, 1fr)
+            [full-end];
+        align-content: start;
+    }
+    .wrapping > * {
+        grid-column: main;
+    }
+
+    .wrapping > * + * {
+        margin-top: 2rem;
+    }
+}
+
+@layer typography {
+    .textflow {
+        & > * + * {
+            margin-top: 1em;
+        }
+
+        a {
+            text-decoration: underline;
+        }
+    }
+}
+
+@layer presentation {
+    .module + .module {
+        margin-top: 2rem;
+    }
+    .columns {
+        display: grid;
+        gap: 2rem;
+
+        @media (min-width: 40em) {
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+        }
+    }
+}
+
+
+.placeholder {
+    display: block;
+}
+
+.foil {
+    display: grid;
+
+    .placeholder,
+    .text {
+        grid-area: 1/-1;
+    }
+
+    .placeholder {
+        width: 100%;
+        height: auto;
+    }
+    .text {
+        display: flex;
+        align-items: flex-end;
+        /* justify-content: center; */
+        padding: 1ex;
+        padding: 1cqi;
+        font-size: clamp( 1em, 4cqi, 1.7em );
+        font-weight: 700;
+        color: #fff;
+
+        border-image: fill 0 linear-gradient(#0000 30%, #0002 66%,#0009);
+    }
+}
+
+.square {
+    position: relative;
+
+    [data-indicator] {
+        position: absolute;
+        right: 1ex;
+        bottom: 1ex;
+
+        > * {
+            width: 1ex;
+            height: 1ex;
+        }
+    }
+}
+</style>
+<link rel="stylesheet" href="slide-roll.css">
+</head>
+<body>
+    <main>
+
+        <div class="module wrapping">
+            <div class="textflow">
+                <p>Let's see if we can create a low footprint slide show carousel thingy!</p>
+            </div>
+        </div>
+
+        <div class="module wrapping">
+
+        <slide-roll class="slide-roll" interval="2">
+            <div class="sr-track" data-track>
+                <div class="sr-item foil">
+                    <svg class="placeholder" role="img" width="1920" height="1080">
+                        <use xlink:href="#img-1920" href="#img-1920"></use>
+                    </svg>
+                    <div class="text">
+                        Slide Number 1
+                    </div>
+                </div>
+
+                <div class="sr-item foil">
+                    <svg class="placeholder" role="img" width="1920" height="1080">
+                        <use xlink:href="#img-1920b" href="#img-1920b"></use>
+                    </svg>
+                    <div class="text">
+                        Slide Number 2
+                    </div>
+                </div>
+
+                <div class="sr-item foil">
+                    <svg class="placeholder" role="img" width="1920" height="1080">
+                        <use xlink:href="#img-1920c" href="#img-1920c"></use>
+                    </svg>
+                    <div class="text">
+                        Slide Number 3
+                    </div>
+                </div>
+            </div>
+            <div class="sr-indicator" data-indicator></div>
+        </slide-roll>
+
+        </div>
+
+        <div class="module wrapping">
+            <div class="textflow">
+                <p>Yes it's possible. It's very simple but depends on nothing else than yout browsers JavaScript available. It also pauses on hover/touch.</p>
+                <p>It's pretty responsive as long as your contents keep their shapes equal to each other.</p>
+                <p>There is no interaction (yet?) since it was not necassary at time of writing.</p>
+            </div>
+        </div>
+
+        <div class="module">
+            <slide-roll class="slide-roll" nonstop>
+                <div class="sr-track" data-track>
+                    <div class="sr-item foil">
+                        <svg class="placeholder" role="img" width="1920" height="1080">
+                            <use xlink:href="#img-1920" href="#img-1920"></use>
+                        </svg>
+                        <div class="text">
+                            Slide Number 1
+                        </div>
+                    </div>
+
+                    <div class="sr-item foil">
+                        <svg class="placeholder" role="img" width="1920" height="1080">
+                            <use xlink:href="#img-1920b" href="#img-1920b"></use>
+                        </svg>
+                        <div class="text">
+                            Slide Number 2
+                        </div>
+                    </div>
+
+                    <div class="sr-item foil">
+                        <svg class="placeholder" role="img" width="1920" height="1080">
+                            <use xlink:href="#img-1920c" href="#img-1920c"></use>
+                        </svg>
+                        <div class="text">
+                            Slide Number 3
+                        </div>
+                    </div>
+                </div>
+            </slide-roll>
+        </div>
+
+        <div class="module wrapping">
+            <div class="textflow">
+                <p>This large one here does not pause on hover/tocuh due to the <code>nonstop</code> attribute.</p>
+            </div>
+        </div>
+
+
+        <div class="module wrapping">
+            <div class="columns">
+                <slide-roll class="slide-roll square" interval="3">
+                    <div class="sr-track" data-track>
+                        <div class="sr-item foil">
+                            <svg class="placeholder" role="img" width="800" height="800">
+                                <use xlink:href="#img-800" href="#img-800"></use>
+                            </svg>
+                            <div class="text">
+                                Slide Number 1
+                            </div>
+                        </div>
+
+                        <div class="sr-item foil">
+                            <svg class="placeholder" role="img" width="800" height="800">
+                                <use xlink:href="#img-800b" href="#img-800b"></use>
+                            </svg>
+                            <div class="text">
+                                Slide Number 2
+                            </div>
+                        </div>
+
+                        <div class="sr-item foil">
+                            <svg class="placeholder" role="img" width="800" height="800">
+                                <use xlink:href="#img-800c" href="#img-800c"></use>
+                            </svg>
+                            <div class="text">
+                                Slide Number 3
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sr-indicator" data-indicator></div>
+                </slide-roll>
+                <div class="textflow">
+                <p>See this? It's so responsive! The custom indicator design comes from CSS overrides in this documents styles.</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis perferendis ipsam, voluptatem quas, cupiditate corrupti quidem quisquam dicta nesciunt laboriosam in ut nam impedit! Deleniti corrupti libero suscipit vero blanditiis!</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script type="module" src="slide-roll.js"></script>
+
+<svg style="scale:0" width=0 height=0>
+    <defs>
+        <linearGradient id="grad1" x1=".1" x2=".7" y1="0" y2=".8">
+            <stop offset="0%" stop-color="#FBAB7E"/>
+            <stop offset="100%" stop-color="#FFCC70"/>
+        </linearGradient>
+        <linearGradient id="grad2" x1=".1" x2=".7" y1="0" y2=".8">
+            <stop offset="0%" stop-color="#DDD6F3"/>
+            <stop offset="100%" stop-color="#3EECAC"/>
+        </linearGradient>
+        <linearGradient id="grad3" x1=".1" x2=".7" y1="0" y2=".8">
+            <stop offset="0%" stop-color="#FDBB2D"/>
+            <stop offset="100%" stop-color="#8EC5FC"/>
+        </linearGradient>
+        <linearGradient id="grad4" x1=".1" x2=".7" y1="0" y2=".8">
+            <stop offset="0%" stop-color="#FDBB2D"/>
+            <stop offset="100%" stop-color="#22C1C3"/>
+        </linearGradient>
+    </defs>
+
+    <symbol id="img-1920" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+        <rect fill="url(#grad1)" width="1920" height="1080"/>
+        <text fill="rgba(0,0,0,0.5)" font-family="sans-serif" font-size="30" dy="10.5" font-weight="bold" x="50%" y="50%" text-anchor="middle">1920×1080</text>
+    </symbol>
+    <symbol id="img-1920b" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+        <rect fill="url(#grad2)" width="1920" height="1080"/>
+        <text fill="rgba(0,0,0,0.5)" font-family="sans-serif" font-size="30" dy="10.5" font-weight="bold" x="50%" y="50%" text-anchor="middle">1920×1080</text>
+    </symbol>
+    <symbol id="img-1920c" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
+        <rect fill="url(#grad3)" width="1920" height="1080"/>
+        <text fill="rgba(0,0,0,0.5)" font-family="sans-serif" font-size="30" dy="10.5" font-weight="bold" x="50%" y="50%" text-anchor="middle">1920×1080</text>
+    </symbol>
+    <symbol id="img-800" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
+        <rect fill="url(#grad4)" width="800" height="800"/>
+        <text fill="rgba(0,0,0,0.5)" font-family="sans-serif" font-size="30" dy="10.5" font-weight="bold" x="50%" y="50%" text-anchor="middle">800</text>
+    </symbol>
+    <symbol id="img-800b" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
+        <rect fill="url(#grad3)" width="800" height="800"/>
+        <text fill="rgba(0,0,0,0.5)" font-family="sans-serif" font-size="30" dy="10.5" font-weight="bold" x="50%" y="50%" text-anchor="middle">800</text>
+    </symbol><symbol id="img-800c" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
+        <rect fill="url(#grad2)" width="800" height="800"/>
+        <text fill="rgba(0,0,0,0.5)" font-family="sans-serif" font-size="30" dy="10.5" font-weight="bold" x="50%" y="50%" text-anchor="middle">800</text>
+    </symbol>
+</svg>
+</body>
+</html>

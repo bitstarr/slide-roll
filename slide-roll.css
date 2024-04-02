@@ -1,0 +1,39 @@
+.slide-roll {
+    --_indicator-default: var( --o-sr-indictorColor, #ccc );
+    --_indicator-active: var( --o-sr-indictorColorActive, #333 );
+
+    container: slideroll / inline-size;
+    display: block;
+
+    :where( [data-track] ) {
+        display: flex;
+        overflow: hidden;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+
+        > * {
+            /* flex: 0 0 20em; */
+            width: 100cqi;
+            flex: 0 0 auto;
+            scroll-snap-align: start;
+        }
+    }
+
+    :where( [data-indicator] ) {
+        --_bg: var( --_indicator-default );
+
+        display: flex;
+        gap: .2em;
+
+        > * {
+            width: 100%;
+            height: clamp( .2em, 1cqi, .4em );
+            background-color: var( --_bg );
+        }
+
+        [data-active] {
+            --_bg: var( --_indicator-active );
+        }
+    }
+
+}
