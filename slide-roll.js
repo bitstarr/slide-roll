@@ -81,13 +81,22 @@ class SlideRoll extends HTMLElement
         this.pause = false;
     }
 
-    move() {
+    move()
+    {
         this.track.scroll({
             top: 0,
             left: this.track.clientWidth * this.entryPointer,
             behavior: 'auto',
         });
         this.entryPointer++;
+
+        // adding extra code for the IE6 of the 2020s
+        if ( ! ( 'onscrollend' in window ) )
+        {
+            // I hate you, Safari.
+            clearTimeout( window.scrollEndTimer );
+            window.scrollEndTimer = setTimeout( this.checkEdge, 100 );
+        }
     }
 
     rewind()
