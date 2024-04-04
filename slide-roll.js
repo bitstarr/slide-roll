@@ -54,9 +54,10 @@ class SlideRoll extends HTMLElement
         this.rewind();
 
         // run
-        const runner = setInterval( function( self )
+        const runner = setInterval(
+            function( self )
             {
-                // but pause on hover
+            // but pause on hover
                 if ( ! self.pause )
                 {
                     self.move();
@@ -114,7 +115,7 @@ class SlideRoll extends HTMLElement
         // on last element scroll to first
         if ( this.entryPointer > this.entryCount )
         {
-            this.rewind()
+            this.rewind();
         }
     }
 
@@ -134,7 +135,6 @@ class SlideRoll extends HTMLElement
             return;
         }
 
-        const pointer = ( this.entryPointer > this.entryCount ) ? 1 : this.entryPointer;
         const items = this.indicator.children;
         for ( var i = 0; i < items.length; i++ )
         {
@@ -145,9 +145,9 @@ class SlideRoll extends HTMLElement
             // set active if key and pointer match
             // or it's going to be the cloned slide
             if (
-                    key == this.entryPointer ||
-                    ( this.entryPointer > this.entryCount && i === 0 )
-                )
+                key == this.entryPointer ||
+                ( this.entryPointer > this.entryCount && i === 0 )
+            )
             {
                 item.dataset.active = true;
             }
@@ -156,5 +156,5 @@ class SlideRoll extends HTMLElement
 }
 
 if ( 'customElements' in window ) {
-	customElements.define( SlideRoll.tagName, SlideRoll );
+    customElements.define( SlideRoll.tagName, SlideRoll );
 }

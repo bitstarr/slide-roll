@@ -26,7 +26,7 @@ It provides basic functionality, by moving through the slides in a given interva
                 Fancy call to action text?
             </p>
         </div>
-        <div class="ks-item">
+        <div class="stage">
             <img
                 class="image"
                 src="https://picsum.photos/333/500?random=2"
