@@ -1,6 +1,6 @@
 # `<slide-roll>`
 
-Simple (non interactive) slide show. You know these things designers use to prevent bloodsheds in management meetings…
+Simple (now interactive) slide show. You know these things designers use to prevent bloodsheds in management meetings…
 
 It provides basic functionality, by moving through the slides in a given interval. No separate dependencies, only modern CSS and little JavaScrip logic.
 
@@ -41,6 +41,10 @@ It provides basic functionality, by moving through the slides in a given interva
         […]
     </div>
     <div data-indicator></div>
+    <div class="controls">
+        <button data-control="prev">prev</button>
+        <button data-control="next">next</button>
+    </div>
 </slide-roll >
 ```
 
@@ -52,4 +56,4 @@ The interval can be set via the `interval` attribute and is given in seconds.
 
 The slideshow will pause if the user hovers (mouseover) or touches the element. You can set the attribute `nonstop` to the slide-roll, to prevent pausing.
 
-The indicator is optional. Simply remove the div from the example. You can customize the design of the indication display (look at the demo) since the default styling has a very low specificy.
+The indicator is optional as well as the controls. Simply remove the `div`s from the example. You can customize the design of the indication display (look at the demo) since the default styling has a very low specificy.

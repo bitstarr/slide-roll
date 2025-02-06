@@ -184,37 +184,41 @@
 
         <div class="module wrapping">
 
-        <slide-roll class="slide-roll" interval="2">
-            <div class="sr-track" data-track>
-                <div class="sr-item foil">
-                    <svg class="placeholder" role="img" width="1920" height="1080">
-                        <use xlink:href="#img-1920" href="#img-1920"></use>
-                    </svg>
-                    <div class="text">
-                        Slide Number 1
+            <slide-roll class="slide-roll" interval="2">
+                <div class="sr-track" data-track>
+                    <div class="sr-item foil">
+                        <svg class="placeholder" role="img" width="1920" height="1080">
+                            <use xlink:href="#img-1920" href="#img-1920"></use>
+                        </svg>
+                        <div class="text">
+                            Slide Number 1
+                        </div>
                     </div>
-                </div>
 
-                <div class="sr-item foil">
-                    <svg class="placeholder" role="img" width="1920" height="1080">
-                        <use xlink:href="#img-1920b" href="#img-1920b"></use>
-                    </svg>
-                    <div class="text">
-                        Slide Number 2
+                    <div class="sr-item foil">
+                        <svg class="placeholder" role="img" width="1920" height="1080">
+                            <use xlink:href="#img-1920b" href="#img-1920b"></use>
+                        </svg>
+                        <div class="text">
+                            Slide Number 2
+                        </div>
                     </div>
-                </div>
 
-                <div class="sr-item foil">
-                    <svg class="placeholder" role="img" width="1920" height="1080">
-                        <use xlink:href="#img-1920c" href="#img-1920c"></use>
-                    </svg>
-                    <div class="text">
-                        Slide Number 3
+                    <div class="sr-item foil">
+                        <svg class="placeholder" role="img" width="1920" height="1080">
+                            <use xlink:href="#img-1920c" href="#img-1920c"></use>
+                        </svg>
+                        <div class="text">
+                            Slide Number 3
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="sr-indicator" data-indicator></div>
-        </slide-roll>
+                <div class="sr-indicator" data-indicator></div>
+                <div class="controls">
+                    <button data-control="prev">prev</button>
+                    <button data-control="next">next</button>
+                </div>
+            </slide-roll>
 
         </div>
 
@@ -227,7 +231,7 @@
         </div>
 
         <div class="module">
-            <slide-roll class="slide-roll" nonstop>
+            <slide-roll class="slide-roll" interval="5" nonstop>
                 <div class="sr-track" data-track>
                     <div class="sr-item foil">
                         <svg class="placeholder" role="img" width="1920" height="1080">
@@ -305,6 +309,7 @@
                 </div>
             </div>
         </div>
+
     </main>
     <script type="module" src="slide-roll.js"></script>
 

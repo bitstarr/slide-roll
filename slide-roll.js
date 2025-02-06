@@ -14,8 +14,9 @@ class SlideRoll extends HTMLElement
     {
         // collect some information for later
         this.track = this.querySelector( '[data-track]' );
-        this.interval = this.getAttribute( 'interval' ) || 5;
+        this.interval = this.getAttribute( 'interval' )
         this.indicator = this.querySelector( '[data-indicator]' );
+        this.buttons = this.querySelectorAll( 'button[data-control]' );
         this.entryCount = this.track.children.length;
         this.entryPointer = 1;
 
@@ -30,7 +31,12 @@ class SlideRoll extends HTMLElement
             this.mountIndicator();
         }
 
-        // make it pauseable
+        if ( this.buttons )
+        {
+            this.mountButtons();
+        }
+
+        // make it pauseable on hover
         this.pause = false;
         if ( this.getAttribute( 'nonstop' ) === null )
         {
@@ -41,32 +47,36 @@ class SlideRoll extends HTMLElement
         }
 
         // now run!
-        this.runCarousel();
+        this.init();
     }
 
-    runCarousel()
+    init()
     {
         // clone for the effect
         const first = this.track.firstElementChild.cloneNode( true );
+        const last = this.track.lastElementChild.cloneNode( true );
         this.track.appendChild( first );
+        this.track.prepend( last );
 
         // move to first position, to be sure…
-        this.rewind();
+        this.gotoFirst();
 
-        // run
-        const runner = setInterval(
-            function( self )
-            {
-            // but pause on hover
-                if ( ! self.pause )
+        if ( this.interval )
+        {
+            // run
+            const runner = setInterval(
+                function( self )
                 {
-                    self.move();
-                    self.setIndicator();
-                }
-            },
-            this.interval * 1000,
-            this
-        );
+                // but pause on hover
+                    if ( ! self.pause )
+                    {
+                        self.move();
+                    }
+                },
+                this.interval * 1000,
+                this
+            );
+        }
 
         // check if we reached the end
         this.track.addEventListener( 'scrollend', this.checkEdge );
@@ -82,14 +92,19 @@ class SlideRoll extends HTMLElement
         this.pause = false;
     }
 
-    move()
+    move( direction = 'next' )
     {
-        this.track.scroll({
+        direction = ( direction == 'next' ) ? 1 : -1;
+
+        this.track.scrollBy( {
+            // the offset is more a rough estimae, considering unequal item widths
+            left: ( this.track.scrollWidth / this.track.children.length ) * direction,
             top: 0,
-            left: this.track.clientWidth * this.entryPointer,
-            behavior: 'auto',
+            behavior: 'smooth'
         });
-        this.entryPointer++;
+
+        this.entryPointer += direction;
+        this.setIndicator();
 
         // adding extra code for the IE6 of the 2020s
         if ( ! ( 'onscrollend' in window ) )
@@ -100,14 +115,25 @@ class SlideRoll extends HTMLElement
         }
     }
 
-    rewind()
+    gotoFirst()
     {
         this.entryPointer = 1;
         this.track.scroll({
+            left: ( this.track.scrollWidth / this.track.children.length ),
             top: 0,
-            left: 0,
             behavior: 'instant',
         });
+    }
+
+    gotoLast()
+    {
+        this.entryPointer = this.track.children.length - 2;
+        this.track.scroll({
+            left:  ( this.track.scrollWidth / this.track.children.length ) * ( this.track.children.length - 2 ),
+            top: 0,
+            behavior: 'instant',
+        });
+
     }
 
     checkEdge()
@@ -115,8 +141,28 @@ class SlideRoll extends HTMLElement
         // on last element scroll to first
         if ( this.entryPointer > this.entryCount )
         {
-            this.rewind();
+            this.gotoFirst();
         }
+        else if ( this.entryPointer < 1 )
+        {
+            this.gotoLast();
+        }
+    }
+
+    mountButtons()
+    {
+        // set event listeneres
+        let self = this;
+        let entryPointer = this.entryPointer;
+        this.buttons.forEach( button =>
+            {
+                button.addEventListener( 'click', function( e )
+                {
+                    let direction = e.currentTarget.dataset.control;
+                    self.move( direction );
+                });
+            }
+        );
     }
 
     mountIndicator()
@@ -143,10 +189,11 @@ class SlideRoll extends HTMLElement
             delete item.dataset.active;
 
             // set active if key and pointer match
-            // or it's going to be the cloned slide
+            // or it's going to be the cloned slides
             if (
                 key == this.entryPointer ||
-                ( this.entryPointer > this.entryCount && i === 0 )
+                ( this.entryPointer > this.entryCount && i === 0 ) ||
+                ( this.entryPointer == 0 && key === this.entryCount )
             )
             {
                 item.dataset.active = true;

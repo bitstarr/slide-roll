@@ -36,4 +36,17 @@
         }
     }
 
+    :where( .controls ) {
+        display: flex;
+        justify-content: space-between;
+        gap: 1ex;
+        margin-block-start: 1em;
+    }
+
+    :where( [data-control] ) {
+        padding: 1ex;
+        border: 2px solid;
+        cursor: pointer;
+    }
+
 }
